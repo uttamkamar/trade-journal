@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+
+# Personal data & SQLite databases (never commit)
+journal.db
+*.db
+*.sqlite
+*.sqlite3
+*-wal
+*-shm
+
+# Uploaded screenshots & personal attachments (preserve folder placeholder)
+uploads/*
+!uploads/.gitkeep
+
+# Personal exports & backups
+*.csv
+*backup*.json
+exports/
+
+# Environment files with secrets (preserve .env.example)
+.env
+.env.*
+!.env.example
+
+# Build outputs & caches
+dist/
+build/
+*.tsbuildinfo
+
+# Logs & temporary files
+*.log
+npm-debug.log*
+pnpm-debug.log*
+tmp/
+temp/
+
+# Test reports & generated artifacts
+test-results/
+playwright-report/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE & local agent files
+.vscode/
+.idea/
+*.swp
+.claude/
+.cursor/
+
+# Local prompt source file (keep locally, do not upload)
+simple_personal_trading_journal_master_prompt_gsd_ponytail_uipro_v2.md

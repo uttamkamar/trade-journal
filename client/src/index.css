@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens — UI UX Pro Max: Flat Design, Teal + Orange ── */
+@layer base {
+  :root {
+    color-scheme: light;
+    /* Brand */
+    --color-primary:          #0D9488; /* Teal 600 */
+    --color-primary-hover:    #0F766E; /* Teal 700 */
+    --color-on-primary:       #FFFFFF;
+    --color-secondary:        #14B8A6; /* Teal 500 */
+    --color-accent:           #EA580C; /* Orange 600 — CTAs only */
+    --color-accent-hover:     #C2410C; /* Orange 700 */
+
+    /* Surfaces */
+    --color-background:       #F0FDFA; /* Teal 50 — warm near-white */
+    --color-foreground:       #134E4A; /* Teal 950 */
+    --color-card:             #FFFFFF;
+    --color-card-foreground:  #134E4A;
+    --color-muted:            #E8F1F4;
+    --color-muted-fg:         #475569; /* Slate 600 */
+    --color-border:           #CCEDE9;
+
+    /* Navigation */
+    --color-nav-active-bg:    #CCFBF1; /* Teal 100 */
+
+    /* P/L — always paired with prefix (+/−) and label text, never color-only */
+    --color-profit:           #059669; /* Emerald 600 */
+    --color-profit-bg:        #ECFDF5; /* Emerald 50 */
+    --color-loss:             #DC2626; /* Red 600 */
+    --color-loss-bg:          #FEF2F2; /* Red 50 */
+
+    /* Semantic */
+    --color-ring:             #0D9488;
+    --color-destructive:      #DC2626;
+  }
+
+  /* ── Dark Mode ── */
+  .dark {
+    color-scheme: dark;
+    --color-primary:          #2DD4BF; /* Teal 400 — brighter on dark */
+    --color-primary-hover:    #14B8A6;
+    --color-on-primary:       #042F2E; /* Teal 950 — >= 10:1 contrast on #2DD4BF */
+    --color-secondary:        #14B8A6;
+    --color-accent:           #F97316; /* Orange 500 */
+    --color-accent-hover:     #EA580C;
+
+    --color-background:       #0A1515; /* Very dark teal-black */
+    --color-foreground:       #CCFBF1; /* Teal 100 */
+    --color-card:             #132020;
+    --color-card-foreground:  #CCFBF1;
+    --color-muted:            #1A2E2E;
+    --color-muted-fg:         #94A3B8; /* Slate 400 */
+    --color-border:           #1E3A3A;
+
+    --color-nav-active-bg:    #0F2626;
+
+    --color-profit:           #34D399; /* Emerald 400 */
+    --color-profit-bg:        #064E3B;
+    --color-loss:             #F87171; /* Red 400 */
+    --color-loss-bg:          #450A0A;
+
+    --color-ring:             #2DD4BF;
+    --color-destructive:      #F87171;
+  }
+
+  /* ── Base Styles ── */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply scroll-smooth;
+    scroll-padding-top: 4.5rem;
+    scroll-padding-bottom: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* Focus ring consistent with brand */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar — subtle */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-muted-fg); }
+}
+
+/* ── Utility classes ── */
+@layer utilities {
+  .nav-active-bg { background-color: var(--color-nav-active-bg); }
+}
