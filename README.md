@@ -1,6 +1,6 @@
 # TradeLog — Personal Trading Journal
 
-A clean, lightweight **personal trading journal web application** for recording trades, daily profit/loss, trading mistakes, emotions, and lessons learned. Built as a calm digital diary for self-review—not a trading terminal or broker platform.
+A clean, calm **personal trading journal web application** designed with a **Crisp Swiss Fintech Workspace** aesthetic for recording trades, daily profit/loss, trading mistakes, emotions, and lessons learned. Built as a focused digital diary for self-review—not a trading terminal or broker platform.
 
 ---
 
@@ -25,35 +25,36 @@ A clean, lightweight **personal trading journal web application** for recording 
 
 ## Core Features
 
-1. **Dashboard**
-   - Summary cards: Today's P/L, Trades Taken Today, Winning Trades Today, Losing Trades Today, Overall Net P/L, and optional journal-calculated Recorded Trading Balance.
-   - Today's trades list, Recent Trades (last 5), Daily/Monthly P/L bar chart, quick **Add Trade** action, and a reminder banner when today's daily journal is incomplete.
-   - Open trades are always excluded from realized P/L totals.
+1. **Dashboard (`/`)**
+   - Primary outcome cards (**Today's P/L**, **Overall Net P/L**, and optional journal-calculated **Recorded Balance**) paired with a unified **Today Activity Strip** (**Trades Taken**, **Winning Today**, **Losing Today**).
+   - **Today's Trades**, **Recent Trades** (last 5), a currency-formatted **Daily / Monthly P/L** bar chart, and a subtle reminder banner when today's daily journal is still open.
+   - Open trades are always excluded from realized P/L totals; all financial figures use tabular monospace numerals (`JetBrains Mono`) for crisp alignment.
 2. **Trades (`/trades`)**
    - Fast Add / Edit trade form with pre-populated common instruments (`XAUUSD`, `EURUSD`, `GBPUSD`, `USDJPY`, `GBPJPY`, `BTCUSD`, indices, oil) plus custom symbol support.
    - Manual signed P/L entry (`+` profit, `−` loss, `0` breakeven).
    - Journaling fields: Setup, Entry Reason, Exit Reason, Multi-select Mistakes (+ custom mistake), Emotion, Followed Plan (`Yes` / `No` / `Partially`), Lesson Learned, and multi-image chart screenshot uploads.
-   - Search by symbol or notes, filter by date range/symbol/direction/outcome/mistake/status, sort by date or P/L, responsive mobile trade cards, detail lightbox, and delete confirmation.
+   - Search by symbol or notes, filter by date range/symbol/direction/outcome/mistake/status, sort by date or P/L, keyboard-scrollable desktop table (`lg+`), responsive 1- and 2-column trade cards on mobile & tablet (`375px` / `768px`), detail lightbox, and delete confirmation.
 3. **Daily Journal (`/journal`)**
    - One reflection entry per date (enforced at DB & API level) with all 7 reflection fields + plan-followed selector.
-   - Automatically displays that day's realized P/L and trade count at the top.
-   - Interactive month calendar + saved entries list, incomplete draft saving, and local unsaved-draft backup.
+   - Automatically displays the selected session's realized P/L and trade count at the top.
+   - Persistent month calendar & saved entries side rail on desktop (`lg+`), and a compact date selector with a collapsible **Calendar & Saved Entries** drawer on mobile/tablet so writing space stays uncluttered.
+   - Incomplete draft saving and local unsaved-draft backup.
 4. **Performance (`/performance`)**
-   - Closed-trade metrics: Total Closed Trades, Wins, Losses, Breakeven, Win Rate (`wins / all closed × 100`), Gross Profit, Gross Loss, Net P/L, Average Win, Average Loss, Best Trade, and Worst Trade (`---` on zero denominators).
+   - Headline KPIs (**Net P/L**, **Win Rate**, **Gross Profit**, **Gross Loss**) and grouped **Trade Volume & Outcomes** and **Averages & Extremes** panels (Total Closed, Wins, Losses, Breakeven, Average Win, Average Loss, Best Trade, Worst Trade — `---` on zero denominators).
    - Time filters: Today, This Week, This Month, Last Month, This Year, All Time, and Custom Date Range.
-   - Daily P/L bar chart, Monthly P/L bar chart, Cumulative P/L line chart, and mixed-currency safeguards.
+   - Currency-formatted Daily P/L bar chart, Monthly P/L bar chart, Cumulative P/L line chart, and mixed-currency safeguards.
 5. **Mistake Analysis (`/mistakes`)**
-   - Neutral frequency ranking of tagged mistakes, monthly breakdown, associated closed-trade P/L, and click-to-inspect drill-down showing all trades tagged with each mistake.
+   - Neutral frequency ranking of tagged mistakes with semantic progress bars, monthly breakdown, associated closed-trade P/L, and click-to-inspect drill-down showing all trades tagged with each mistake.
 6. **Settings, Export & Backup (`/settings`)**
-   - Preferred currency, optional starting balance, Light/Dark theme persistence, and custom instruments / custom mistakes management.
+   - Preferred currency, optional starting balance, Sun/Moon Light & Obsidian Dark theme persistence, and custom instruments / custom mistakes management.
    - **CSV Export** of all trades (`YYYY-MM-DD` dates, signed P/L, mistakes, screenshot references, RFC-4180 escaping).
-   - **Full JSON Backup & Transactional Restore** with schema validation, new-vs-duplicate preview, explicit confirmation dialog, **Safe Merge** (skip duplicates) or **Update Duplicates**, and SQLite rollback on error.
+   - **Full JSON Backup & Transactional Restore** with schema validation, new-vs-duplicate preview, explicit confirmation dialog, **Safe Merge** (skip duplicates) vs caution-framed **Merge & Overwrite Duplicates**, and SQLite rollback on error.
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** React 18, Vite 6, TypeScript, Tailwind CSS v3, TanStack React Query, Zustand, Recharts, Phosphor Icons
+- **Frontend:** React 18, Vite 6, TypeScript, Tailwind CSS v3 (`Inter` + `JetBrains Mono`), TanStack React Query, Zustand, Recharts, Phosphor Icons
 - **Backend:** Node.js, Express.js, Multer
 - **Database:** SQLite via Node.js built-in `node:sqlite` (`DatabaseSync`, WAL mode)
 - **Package Manager:** pnpm (workspaces)
@@ -128,7 +129,7 @@ node server/test-phase6.js   # Settings persistence, CSV/JSON export, preview & 
 trade-journal/
 ├── client/                  # React + Vite + TypeScript frontend
 │   └── src/
-│       ├── components/      # Layout, ThemeProvider, TradeForm, TradeDetail, PnlBadge, ConfirmDialog
+│       ├── components/      # Layout, ThemeProvider, TradeForm, TradeDetail, PnlBadge, SignedPnlBarShape, ConfirmDialog
 │       ├── hooks/           # React Query hooks (useTrades, useJournal)
 │       ├── lib/             # API wrapper, constants, date/currency/analytics utils
 │       └── pages/           # Dashboard, Trades, Journal, Performance, Mistakes, Settings
