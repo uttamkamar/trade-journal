@@ -302,7 +302,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
           <button
             type="button"
             onClick={() => navigate(isEdit && existingTrade ? `/trades/${existingTrade.id}` : '/trades')}
-            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-sm border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
+            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-md border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
             aria-label="Back to trades"
           >
             <ArrowLeft size={18} aria-hidden="true" />
@@ -326,7 +326,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
           ref={errorSummaryRef}
           tabIndex={-1}
           role="alert"
-          className="bg-loss-bg border border-loss/30 rounded-md p-4 text-sm text-loss space-y-1.5"
+          className="bg-loss-bg border border-loss/30 rounded-lg p-4 text-sm text-loss space-y-1.5"
         >
           <div className="flex items-center gap-2 font-semibold">
             <WarningCircle size={18} weight="bold" aria-hidden="true" />
@@ -357,9 +357,9 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
       )}
 
       {/* Section 1: Trade Details */}
-      <section className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-5">
+      <section className="bg-card border border-border rounded-lg p-5 md:p-6 shadow-card space-y-5">
         <div className="border-b border-border pb-3">
-          <h2 className="text-base font-bold">1. Trade Details</h2>
+          <h2 className="text-base font-semibold">1. Trade Details</h2>
           <p className="text-xs text-muted-fg mt-0.5">
             Core execution details. Open trades are saved without realized P/L.
           </p>
@@ -368,7 +368,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Trade Date */}
           <div>
-            <label htmlFor="trade-date" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="trade-date" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Trade Date <span className="text-loss">*</span>
             </label>
             <input
@@ -377,7 +377,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               value={tradeDate}
               onChange={(e) => setTradeDate(e.target.value)}
               aria-invalid={Boolean(fieldErrors.tradeDate)}
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num"
             />
             {fieldErrors.tradeDate && (
               <p className="text-xs text-loss mt-1">{fieldErrors.tradeDate}</p>
@@ -386,7 +386,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
           {/* Direction */}
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Direction <span className="text-loss">*</span>
             </span>
             <div className="grid grid-cols-2 gap-2">
@@ -397,7 +397,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                   aria-pressed={direction === dir}
                   onClick={() => setDirection(dir)}
                   className={cn(
-                    'min-h-[42px] rounded-sm border text-sm font-semibold transition-colors cursor-pointer',
+                    'min-h-[42px] rounded-md border text-sm font-semibold transition-colors cursor-pointer',
                     direction === dir
                       ? dir === 'Buy'
                         ? 'bg-profit-bg border-profit text-profit'
@@ -413,7 +413,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
           {/* Result Status */}
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Result Status <span className="text-loss">*</span>
             </span>
             <div className="grid grid-cols-2 gap-2">
@@ -424,7 +424,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                   aria-pressed={status === st}
                   onClick={() => setStatus(st)}
                   className={cn(
-                    'min-h-[42px] rounded-sm border text-sm font-semibold transition-colors cursor-pointer',
+                    'min-h-[42px] rounded-md border text-sm font-semibold transition-colors cursor-pointer',
                     status === st
                       ? 'bg-primary text-on-primary border-primary'
                       : 'bg-background border-border text-muted-fg hover:text-foreground',
@@ -439,7 +439,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
         {/* Instrument / Symbol */}
         <div className="space-y-2">
-          <label htmlFor="trade-symbol" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg">
+          <label htmlFor="trade-symbol" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
             Instrument / Symbol <span className="text-loss">*</span>
           </label>
           <input
@@ -450,7 +450,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
             placeholder="Type or select (e.g. XAUUSD, EURUSD)"
             aria-invalid={Boolean(fieldErrors.symbol)}
-            className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm font-semibold uppercase placeholder:normal-case placeholder:font-normal"
+            className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num font-semibold uppercase placeholder:normal-case placeholder:font-sans placeholder:font-normal"
           />
           <datalist id="trade-symbols-list">
             {allSymbols.map((s) => (
@@ -464,7 +464,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                 type="button"
                 onClick={() => setSymbol(s)}
                 className={cn(
-                  'px-2.5 py-1 rounded-sm text-xs font-semibold border transition-colors cursor-pointer',
+                  'px-2.5 py-1 rounded-md text-xs font-num font-semibold border transition-colors cursor-pointer',
                   symbol === s
                     ? 'bg-primary text-on-primary border-primary'
                     : 'bg-muted/70 border-border text-foreground hover:bg-muted',
@@ -482,7 +482,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
         {/* Prices, Lots, P/L, Currency */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
-            <label htmlFor="entry-price" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="entry-price" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Entry Price <span className="text-loss">*</span>
             </label>
             <input
@@ -493,7 +493,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               onChange={(e) => setEntryPrice(e.target.value)}
               placeholder="0.00"
               aria-invalid={Boolean(fieldErrors.entryPrice)}
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num"
             />
             {fieldErrors.entryPrice && (
               <p className="text-xs text-loss mt-1">{fieldErrors.entryPrice}</p>
@@ -501,7 +501,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
           </div>
 
           <div>
-            <label htmlFor="exit-price" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="exit-price" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Exit Price {status === 'Closed' && <span className="text-loss">*</span>}
             </label>
             <input
@@ -512,7 +512,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               onChange={(e) => setExitPrice(e.target.value)}
               placeholder={status === 'Open' ? 'Optional while open' : '0.00'}
               aria-invalid={Boolean(fieldErrors.exitPrice)}
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num"
             />
             {fieldErrors.exitPrice && (
               <p className="text-xs text-loss mt-1">{fieldErrors.exitPrice}</p>
@@ -520,7 +520,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
           </div>
 
           <div>
-            <label htmlFor="lot-size" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="lot-size" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Lot / Qty
             </label>
             <input
@@ -531,7 +531,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               onChange={(e) => setLotSize(e.target.value)}
               placeholder="Optional"
               aria-invalid={Boolean(fieldErrors.lotSize)}
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num"
             />
             {fieldErrors.lotSize && (
               <p className="text-xs text-loss mt-1">{fieldErrors.lotSize}</p>
@@ -539,7 +539,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
           </div>
 
           <div>
-            <label htmlFor="realized-pnl" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="realized-pnl" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Net P/L {status === 'Closed' && <span className="text-loss">*</span>}
             </label>
             <input
@@ -551,7 +551,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               onChange={(e) => setRealizedPnl(e.target.value)}
               placeholder={status === 'Open' ? 'Excluded while open' : '+150 or -75'}
               aria-invalid={Boolean(fieldErrors.realizedPnl)}
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num disabled:opacity-50 disabled:cursor-not-allowed"
             />
             {fieldErrors.realizedPnl && (
               <p className="text-xs text-loss mt-1">{fieldErrors.realizedPnl}</p>
@@ -559,14 +559,14 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
           </div>
 
           <div>
-            <label htmlFor="trade-currency" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="trade-currency" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Currency
             </label>
             <select
               id="trade-currency"
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm font-medium"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium"
             >
               {CURRENCIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -577,9 +577,9 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
       </section>
 
       {/* Section 2: Journaling & Mistakes */}
-      <section className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-5">
+      <section className="bg-card border border-border rounded-lg p-5 md:p-6 shadow-card space-y-5">
         <div className="border-b border-border pb-3">
-          <h2 className="text-base font-bold">2. Journaling &amp; Mistakes (Optional)</h2>
+          <h2 className="text-base font-semibold">2. Journaling &amp; Mistakes (Optional)</h2>
           <p className="text-xs text-muted-fg mt-0.5">
             Capture your reasoning, emotions, mistakes, and chart screenshots.
           </p>
@@ -587,7 +587,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="trade-setup" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="trade-setup" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Setup / Strategy
             </label>
             <input
@@ -596,12 +596,12 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               value={setup}
               onChange={(e) => setSetup(e.target.value)}
               placeholder="e.g. London Breakout, Pullback to VWAP"
-              className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm"
             />
           </div>
 
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Did I follow my trading plan?
             </span>
             <div className="grid grid-cols-3 gap-2">
@@ -612,7 +612,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                   aria-pressed={planFollowed === opt}
                   onClick={() => setPlanFollowed((prev) => (prev === opt ? '' : opt))}
                   className={cn(
-                    'min-h-[42px] rounded-sm border text-xs sm:text-sm font-semibold transition-colors cursor-pointer',
+                    'min-h-[42px] rounded-md border text-xs sm:text-sm font-semibold transition-colors cursor-pointer',
                     planFollowed === opt
                       ? 'bg-primary text-on-primary border-primary'
                       : 'bg-background border-border text-muted-fg hover:text-foreground',
@@ -627,7 +627,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="entry-reason" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="entry-reason" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Why did I enter this trade?
             </label>
             <textarea
@@ -636,12 +636,12 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               value={entryReason}
               onChange={(e) => setEntryReason(e.target.value)}
               placeholder="Confluence, market structure, trigger..."
-              className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm"
             />
           </div>
 
           <div>
-            <label htmlFor="exit-reason" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="exit-reason" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Why did I exit this trade?
             </label>
             <textarea
@@ -650,14 +650,14 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               value={exitReason}
               onChange={(e) => setExitReason(e.target.value)}
               placeholder="Hit TP, hit SL, manual close..."
-              className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm"
             />
           </div>
         </div>
 
         {/* Mistakes Multi-Select */}
         <div className="space-y-2.5">
-          <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg">
+          <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
             Mistakes Made (Select all that apply)
           </span>
           <div className="flex flex-wrap gap-2">
@@ -670,7 +670,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                   aria-pressed={selected}
                   onClick={() => toggleMistake(tag)}
                   className={cn(
-                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border text-xs font-medium transition-colors cursor-pointer',
+                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors cursor-pointer',
                     selected
                       ? 'bg-loss-bg border-loss text-loss font-semibold'
                       : 'bg-background border-border text-muted-fg hover:text-foreground hover:bg-muted/60',
@@ -686,7 +686,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               aria-pressed={showOtherMistake}
               onClick={toggleOtherMistake}
               className={cn(
-                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border text-xs font-medium transition-colors cursor-pointer',
+                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors cursor-pointer',
                 showOtherMistake
                   ? 'bg-loss-bg border-loss text-loss font-semibold'
                   : 'bg-background border-border text-muted-fg hover:text-foreground hover:bg-muted/60',
@@ -708,7 +708,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                 value={customMistake}
                 onChange={(e) => setCustomMistake(e.target.value)}
                 placeholder="e.g. Held through high-impact news"
-                className="w-full max-w-md min-h-[40px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+                className="w-full max-w-md min-h-[40px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm"
               />
             </div>
           )}
@@ -716,7 +716,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
         {/* Emotion */}
         <div className="space-y-2">
-          <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg">
+          <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
             Emotion During Trade
           </span>
           <div className="flex flex-wrap gap-2">
@@ -729,7 +729,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
                   aria-pressed={selected}
                   onClick={() => setEmotion((prev) => (prev === em ? '' : em))}
                   className={cn(
-                    'px-3 py-1.5 rounded-sm border text-xs font-medium transition-colors cursor-pointer',
+                    'px-3 py-1.5 rounded-md border text-xs font-medium transition-colors cursor-pointer',
                     selected
                       ? 'bg-primary text-on-primary border-primary font-semibold'
                       : 'bg-background border-border text-muted-fg hover:text-foreground hover:bg-muted/60',
@@ -744,7 +744,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
 
         {/* Lesson */}
         <div>
-          <label htmlFor="trade-lesson" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+          <label htmlFor="trade-lesson" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
             What did I learn from this trade?
           </label>
           <textarea
@@ -753,7 +753,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
             value={lesson}
             onChange={(e) => setLesson(e.target.value)}
             placeholder="Key takeaway to remember next time..."
-            className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+            className="w-full px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm"
           />
         </div>
 
@@ -761,14 +761,14 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg">
+              <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
                 Screenshots (Optional)
               </span>
               <p className="text-xs text-muted-fg">
                 Attach one or more chart screenshots (JPG, PNG, GIF, WebP — max 10 MB each).
               </p>
             </div>
-            <label className="min-h-[40px] inline-flex items-center gap-2 px-3.5 py-2 rounded-sm border border-primary text-primary text-xs font-semibold hover:bg-muted transition-colors cursor-pointer">
+            <label className="min-h-[40px] inline-flex items-center gap-2 px-3.5 py-2 rounded-md border border-primary/50 text-primary text-xs font-semibold hover:bg-nav-active-bg transition-colors cursor-pointer">
               <UploadSimple size={16} weight="bold" aria-hidden="true" />
               <span>Attach Images</span>
               <input
@@ -789,7 +789,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               {existingScreenshots.map((refPath) => (
                 <div
                   key={refPath}
-                  className="relative group rounded-sm border border-border overflow-hidden bg-background"
+                  className="relative group rounded-md border border-border overflow-hidden bg-background"
                 >
                   <img
                     src={refPath}
@@ -810,7 +810,7 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
               {pendingFiles.map((pf, idx) => (
                 <div
                   key={pf.previewUrl}
-                  className="relative rounded-sm border border-dashed border-primary overflow-hidden bg-background"
+                  className="relative rounded-md border border-dashed border-primary overflow-hidden bg-background"
                 >
                   <img
                     src={pf.previewUrl}
@@ -841,14 +841,14 @@ export function TradeForm({ existingTrade }: TradeFormProps) {
         <button
           type="button"
           onClick={() => navigate(isEdit && existingTrade ? `/trades/${existingTrade.id}` : '/trades')}
-          className="min-h-[42px] px-4 py-2 rounded-sm border border-border bg-card text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
+          className="min-h-[42px] px-4 py-2 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSaving}
-          className="min-h-[42px] px-5 py-2 rounded-sm bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors cursor-pointer disabled:opacity-60"
+          className="min-h-[42px] px-5 py-2 rounded-md bg-accent hover:bg-accent-hover text-on-accent text-sm font-semibold transition-colors cursor-pointer disabled:opacity-60"
         >
           {isSaving ? 'Saving…' : isEdit ? 'Update Trade' : 'Save Trade'}
         </button>

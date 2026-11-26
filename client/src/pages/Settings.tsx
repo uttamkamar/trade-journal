@@ -3,8 +3,11 @@ import {
   CheckCircle,
   DownloadSimple,
   FloppyDisk,
+  Moon,
   Plus,
+  Sun,
   UploadSimple,
+  Warning,
   WarningCircle,
   X,
 } from '@phosphor-icons/react';
@@ -234,19 +237,19 @@ export function Settings() {
           <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
           <p className="text-sm text-muted-fg mt-0.5">Loading settings…</p>
         </div>
-        <div className="h-44 rounded-md bg-card border border-border animate-pulse" />
+        <div className="h-44 rounded-lg bg-card border border-border animate-pulse" />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div role="alert" className="bg-loss-bg border border-loss/30 rounded-md p-6 text-center space-y-3 max-w-4xl">
+      <div role="alert" className="bg-loss-bg border border-loss/30 rounded-lg p-6 text-center space-y-3 max-w-4xl">
         <p className="text-sm text-loss font-medium">Failed to load settings.</p>
         <button
           type="button"
           onClick={() => refetch()}
-          className="px-4 py-2 rounded-sm border border-border bg-card text-sm font-semibold cursor-pointer"
+          className="px-4 py-2 rounded-md border border-border bg-card text-sm font-semibold cursor-pointer"
         >
           Retry
         </button>
@@ -259,14 +262,14 @@ export function Settings() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-fg mt-0.5">
-          Currency, starting balance, theme, custom lists, exports, and backups.
+          Manage your journal preferences, custom lists, exports, and backups.
         </p>
       </div>
 
       {/* 1. Preferences: Currency, Starting Balance, Theme */}
-      <section className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-5">
+      <section className="bg-card border border-border rounded-lg p-5 md:p-6 shadow-card space-y-5">
         <div className="border-b border-border pb-3">
-          <h2 className="text-base font-bold">Preferences</h2>
+          <h2 className="text-base font-semibold">Preferences</h2>
           <p className="text-xs text-muted-fg mt-0.5">
             Stored persistently in your local database.
           </p>
@@ -275,26 +278,26 @@ export function Settings() {
         <form onSubmit={handleSavePreferences} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="pref-currency" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+              <label htmlFor="pref-currency" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
                 Preferred Currency
               </label>
               <select
                 id="pref-currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm font-medium"
+                className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
-              <p className="text-[11px] text-muted-fg mt-1">
+              <p className="text-[11px] text-muted-fg mt-1.5 leading-relaxed">
                 Used for dashboard/performance totals and default currency on new trades. Existing trades keep their saved currency.
               </p>
             </div>
 
             <div>
-              <label htmlFor="pref-balance" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+              <label htmlFor="pref-balance" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
                 Starting Balance (Optional)
               </label>
               <input
@@ -304,9 +307,9 @@ export function Settings() {
                 value={startingBalance}
                 onChange={(e) => setStartingBalance(e.target.value)}
                 placeholder="Leave blank to hide balance card"
-                className="w-full min-h-[42px] px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+                className="w-full min-h-[42px] px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-num"
               />
-              <p className="text-[11px] text-muted-fg mt-1">
+              <p className="text-[11px] text-muted-fg mt-1.5 leading-relaxed">
                 Shows journal-calculated balance on Dashboard when all closed trades match {currency}.
               </p>
             </div>
@@ -325,12 +328,12 @@ export function Settings() {
             </div>
           )}
 
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-border">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-border">
             <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-fg">
-                Theme
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
+                Appearance
               </span>
-              <div className="inline-flex rounded-sm border border-border overflow-hidden">
+              <div className="inline-flex rounded-md border border-border p-0.5 bg-background">
                 {(['light', 'dark'] as const).map((mode) => (
                   <button
                     key={mode}
@@ -338,13 +341,18 @@ export function Settings() {
                     aria-pressed={theme === mode}
                     onClick={() => handleThemeChange(mode)}
                     className={cn(
-                      'px-3.5 py-1.5 text-xs font-semibold capitalize cursor-pointer transition-colors',
+                      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] text-xs font-semibold capitalize cursor-pointer transition-colors',
                       theme === mode
-                        ? 'bg-primary text-on-primary'
-                        : 'bg-background text-muted-fg hover:text-foreground',
+                        ? 'bg-card text-foreground shadow-sm'
+                        : 'text-muted-fg hover:text-foreground',
                     )}
                   >
-                    {mode}
+                    {mode === 'light' ? (
+                      <Sun size={14} weight="regular" aria-hidden="true" />
+                    ) : (
+                      <Moon size={14} weight="regular" aria-hidden="true" />
+                    )}
+                    <span>{mode}</span>
                   </button>
                 ))}
               </div>
@@ -353,7 +361,7 @@ export function Settings() {
             <button
               type="submit"
               disabled={updateSettings.isPending}
-              className="min-h-[40px] inline-flex items-center gap-1.5 px-4 py-2 rounded-sm bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors cursor-pointer disabled:opacity-60"
+              className="min-h-[40px] inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-accent hover:bg-accent-hover text-on-accent text-sm font-semibold transition-colors cursor-pointer disabled:opacity-60"
             >
               <FloppyDisk size={16} weight="bold" aria-hidden="true" />
               <span>{updateSettings.isPending ? 'Saving…' : 'Save Preferences'}</span>
@@ -365,9 +373,9 @@ export function Settings() {
       {/* 2. Custom Symbols & Custom Mistakes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Custom Symbols */}
-        <section className="bg-card border border-border rounded-md p-5 shadow-card space-y-4">
+        <section className="bg-card border border-border rounded-lg p-5 shadow-card space-y-4">
           <div>
-            <h2 className="text-base font-bold">Custom Instruments</h2>
+            <h2 className="text-base font-semibold">Custom Instruments</h2>
             <p className="text-xs text-muted-fg mt-0.5">
               {DEFAULT_SYMBOLS.length} common instruments are pre-loaded. Add your own symbols here.
             </p>
@@ -383,12 +391,12 @@ export function Settings() {
               value={newSymbol}
               onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
               placeholder="e.g. NIFTY50, SOLUSD"
-              className="flex-1 min-h-[40px] px-3 py-2 rounded-sm border border-border bg-background text-sm uppercase font-semibold"
+              className="flex-1 min-h-[40px] px-3 py-2 rounded-md border border-border bg-background text-sm font-num uppercase font-semibold placeholder:normal-case placeholder:font-sans placeholder:font-normal"
             />
             <button
               type="submit"
               disabled={updateSettings.isPending}
-              className="min-h-[40px] inline-flex items-center gap-1 px-3.5 py-2 rounded-sm bg-primary text-on-primary text-xs font-semibold cursor-pointer"
+              className="min-h-[40px] inline-flex items-center gap-1 px-3.5 py-2 rounded-md bg-primary hover:bg-primary-hover text-on-primary text-xs font-semibold cursor-pointer transition-colors"
             >
               <Plus size={14} weight="bold" aria-hidden="true" />
               <span>Add</span>
@@ -404,14 +412,14 @@ export function Settings() {
               {(settings?.custom_symbols ?? []).map((sym) => (
                 <span
                   key={sym}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-muted text-foreground text-xs font-semibold"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted text-foreground text-xs font-num font-semibold"
                 >
                   <span>{sym}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveSymbol(sym)}
                     aria-label={`Remove symbol ${sym}`}
-                    className="text-muted-fg hover:text-loss cursor-pointer"
+                    className="p-0.5 text-muted-fg hover:text-loss cursor-pointer"
                   >
                     <X size={13} weight="bold" aria-hidden="true" />
                   </button>
@@ -422,9 +430,9 @@ export function Settings() {
         </section>
 
         {/* Custom Mistakes */}
-        <section className="bg-card border border-border rounded-md p-5 shadow-card space-y-4">
+        <section className="bg-card border border-border rounded-lg p-5 shadow-card space-y-4">
           <div>
-            <h2 className="text-base font-bold">Custom Mistakes</h2>
+            <h2 className="text-base font-semibold">Custom Mistakes</h2>
             <p className="text-xs text-muted-fg mt-0.5">
               {DEFAULT_MISTAKES.length} standard mistake tags are built in. Add personal tags here.
             </p>
@@ -440,12 +448,12 @@ export function Settings() {
               value={newMistake}
               onChange={(e) => setNewMistake(e.target.value)}
               placeholder="e.g. Traded during news"
-              className="flex-1 min-h-[40px] px-3 py-2 rounded-sm border border-border bg-background text-sm"
+              className="flex-1 min-h-[40px] px-3 py-2 rounded-md border border-border bg-background text-sm"
             />
             <button
               type="submit"
               disabled={updateSettings.isPending}
-              className="min-h-[40px] inline-flex items-center gap-1 px-3.5 py-2 rounded-sm bg-primary text-on-primary text-xs font-semibold cursor-pointer"
+              className="min-h-[40px] inline-flex items-center gap-1 px-3.5 py-2 rounded-md bg-primary hover:bg-primary-hover text-on-primary text-xs font-semibold cursor-pointer transition-colors"
             >
               <Plus size={14} weight="bold" aria-hidden="true" />
               <span>Add</span>
@@ -461,14 +469,14 @@ export function Settings() {
               {(settings?.custom_mistakes ?? []).map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-muted text-foreground text-xs font-medium"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted text-foreground text-xs font-medium"
                 >
                   <span>{tag}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveMistake(tag)}
                     aria-label={`Remove mistake ${tag}`}
-                    className="text-muted-fg hover:text-loss cursor-pointer"
+                    className="p-0.5 text-muted-fg hover:text-loss cursor-pointer"
                   >
                     <X size={13} weight="bold" aria-hidden="true" />
                   </button>
@@ -480,39 +488,43 @@ export function Settings() {
       </div>
 
       {/* 3. Export & Backup */}
-      <section className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-4">
+      <section className="bg-card border border-border rounded-lg p-5 md:p-6 shadow-card space-y-4">
         <div className="border-b border-border pb-3">
-          <h2 className="text-base font-bold">Export &amp; Backup</h2>
+          <h2 className="text-base font-semibold">Export &amp; Backup</h2>
           <p className="text-xs text-muted-fg mt-0.5">
             Dates in CSV and JSON backups use ISO YYYY-MM-DD format for reliable portability.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="border border-border rounded-sm p-4 space-y-2.5 bg-background/60">
-            <h3 className="text-sm font-bold">Trades CSV</h3>
-            <p className="text-xs text-muted-fg">
-              Exports all saved trades with signed P/L, currency, mistakes, notes, and screenshot references.
-            </p>
+          <div className="border border-border rounded-md p-4 space-y-3 bg-background/50">
+            <div>
+              <h3 className="text-sm font-semibold">Trades CSV</h3>
+              <p className="text-xs text-muted-fg mt-1 leading-relaxed">
+                Exports all saved trades with signed P/L, currency, mistakes, notes, and screenshot references.
+              </p>
+            </div>
             <a
               href="/api/export/trades.csv"
               download="trades.csv"
-              className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm border border-primary text-primary text-xs font-semibold hover:bg-muted transition-colors"
+              className="min-h-[38px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md border border-border bg-card text-foreground text-xs font-semibold hover:bg-muted transition-colors"
             >
               <DownloadSimple size={16} weight="bold" aria-hidden="true" />
               <span>Download trades.csv</span>
             </a>
           </div>
 
-          <div className="border border-border rounded-sm p-4 space-y-2.5 bg-background/60">
-            <h3 className="text-sm font-bold">Full Backup (JSON)</h3>
-            <p className="text-xs text-muted-fg">
-              Complete versioned backup containing all trades, daily journal entries, and settings.
-            </p>
+          <div className="border border-border rounded-md p-4 space-y-3 bg-background/50">
+            <div>
+              <h3 className="text-sm font-semibold">Full Backup (JSON)</h3>
+              <p className="text-xs text-muted-fg mt-1 leading-relaxed">
+                Complete versioned backup containing all trades, daily journal entries, and settings.
+              </p>
+            </div>
             <a
               href="/api/export/backup.json"
               download="tradelog-backup.json"
-              className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-primary text-on-primary text-xs font-semibold hover:bg-primary-hover transition-colors"
+              className="min-h-[38px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-accent hover:bg-accent-hover text-on-accent text-xs font-semibold transition-colors"
             >
               <DownloadSimple size={16} weight="bold" aria-hidden="true" />
               <span>Download Backup JSON</span>
@@ -521,17 +533,23 @@ export function Settings() {
         </div>
       </section>
 
-      {/* 4. Import / Restore JSON */}
-      <section className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-4">
-        <div className="border-b border-border pb-3">
-          <h2 className="text-base font-bold">Restore from JSON Backup</h2>
-          <p className="text-xs text-muted-fg mt-0.5">
-            Validates your backup and previews every change before touching existing records. Nothing is overwritten silently.
-          </p>
+      {/* 4. Import / Restore JSON (Danger Zone clearly framed) */}
+      <section className="bg-card border border-border rounded-lg p-5 md:p-6 shadow-card space-y-4">
+        <div className="border-b border-border pb-3 flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-base font-semibold">Restore from JSON Backup</h2>
+            <p className="text-xs text-muted-fg mt-0.5">
+              Validates your backup and previews every change before modifying existing records.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30 text-[11px] font-semibold shrink-0">
+            <Warning size={12} weight="bold" aria-hidden="true" />
+            Caution
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <label className="min-h-[40px] inline-flex items-center gap-2 px-4 py-2 rounded-sm border border-primary text-primary text-xs font-semibold hover:bg-muted transition-colors cursor-pointer">
+          <label className="min-h-[40px] inline-flex items-center gap-2 px-4 py-2 rounded-md border border-primary/50 text-primary text-xs font-semibold hover:bg-nav-active-bg transition-colors cursor-pointer">
             <UploadSimple size={16} weight="bold" aria-hidden="true" />
             <span>Select Backup JSON</span>
             <input
@@ -542,29 +560,29 @@ export function Settings() {
             />
           </label>
           {backupFileName && (
-            <span className="text-xs text-muted-fg font-medium">{backupFileName}</span>
+            <span className="text-xs font-num text-muted-fg font-medium">{backupFileName}</span>
           )}
         </div>
 
         {importError && (
-          <div role="alert" className="flex items-center gap-2 rounded-md border border-loss/30 bg-loss-bg px-4 py-3 text-xs font-medium text-loss">
+          <div role="alert" className="flex items-center gap-2 rounded-lg border border-loss/30 bg-loss-bg px-4 py-3 text-xs font-medium text-loss">
             <WarningCircle size={16} weight="bold" aria-hidden="true" />
             <span>{importError}</span>
           </div>
         )}
 
         {importStatus && (
-          <div role="status" className="flex items-center gap-2 rounded-md border border-profit/30 bg-profit-bg px-4 py-3 text-xs font-medium text-profit">
+          <div role="status" className="flex items-center gap-2 rounded-lg border border-profit/30 bg-profit-bg px-4 py-3 text-xs font-medium text-profit">
             <CheckCircle size={16} weight="bold" aria-hidden="true" />
             <span>{importStatus}</span>
           </div>
         )}
 
         {previewResult && (
-          <div className="rounded-md border border-border bg-background p-4 space-y-4">
+          <div className="rounded-lg border border-border bg-background/60 p-4 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-bold">Import Preview</h3>
-              <span className="text-xs text-muted-fg">
+              <h3 className="text-sm font-semibold">Import Preview</h3>
+              <span className="text-xs font-num text-muted-fg">
                 Backup v{previewResult.version}
                 {previewResult.exported_at
                   ? ` · Exported ${formatDate(previewResult.exported_at.slice(0, 10))}`
@@ -573,40 +591,48 @@ export function Settings() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="bg-card border border-border rounded-sm p-3">
+              <div className="bg-card border border-border rounded-md p-3">
                 <div className="font-semibold text-muted-fg uppercase text-[10px]">Trades</div>
-                <div className="text-sm font-bold mt-1">{previewResult.trades.total} in file</div>
-                <div className="text-muted-fg mt-0.5">
-                  {previewResult.trades.new} new · {previewResult.trades.duplicate} already exist
+                <div className="text-sm font-num font-bold mt-1">{previewResult.trades.total} in file</div>
+                <div className="text-muted-fg font-num mt-0.5">
+                  {previewResult.trades.new} new · {previewResult.trades.duplicate} existing
                 </div>
               </div>
 
-              <div className="bg-card border border-border rounded-sm p-3">
+              <div className="bg-card border border-border rounded-md p-3">
                 <div className="font-semibold text-muted-fg uppercase text-[10px]">Daily Journal</div>
-                <div className="text-sm font-bold mt-1">{previewResult.journal.total} in file</div>
-                <div className="text-muted-fg mt-0.5">
-                  {previewResult.journal.new} new · {previewResult.journal.duplicate} already exist
+                <div className="text-sm font-num font-bold mt-1">{previewResult.journal.total} in file</div>
+                <div className="text-muted-fg font-num mt-0.5">
+                  {previewResult.journal.new} new · {previewResult.journal.duplicate} existing
                 </div>
               </div>
 
-              <div className="bg-card border border-border rounded-sm p-3">
+              <div className="bg-card border border-border rounded-md p-3">
                 <div className="font-semibold text-muted-fg uppercase text-[10px]">Settings</div>
                 <div className="text-sm font-bold mt-1">
                   {previewResult.settings.included ? 'Included' : 'Not included'}
                 </div>
                 {previewResult.settings.included && (
-                  <div className="text-muted-fg mt-0.5">
+                  <div className="text-muted-fg font-num mt-0.5">
                     {previewResult.settings.currency ?? 'USD'} · +{previewResult.settings.customSymbolsCount} symbols · +{previewResult.settings.customMistakesCount} mistakes
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-border">
-              <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg">
+            <div className="space-y-2.5 pt-2 border-t border-border">
+              <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
                 Restore Strategy
               </span>
-              <label className="flex items-start gap-2.5 text-xs cursor-pointer">
+
+              <label
+                className={cn(
+                  'flex items-start gap-2.5 text-xs p-3 rounded-md border cursor-pointer transition-colors',
+                  importMode === 'merge_skip'
+                    ? 'bg-card border-primary/50'
+                    : 'bg-card/50 border-border',
+                )}
+              >
                 <input
                   type="radio"
                   name="import-mode"
@@ -620,7 +646,14 @@ export function Settings() {
                 </span>
               </label>
 
-              <label className="flex items-start gap-2.5 text-xs cursor-pointer">
+              <label
+                className={cn(
+                  'flex items-start gap-2.5 text-xs p-3 rounded-md border cursor-pointer transition-colors',
+                  importMode === 'merge_overwrite'
+                    ? 'bg-loss-bg border-loss/50'
+                    : 'bg-card/50 border-border',
+                )}
+              >
                 <input
                   type="radio"
                   name="import-mode"
@@ -629,8 +662,8 @@ export function Settings() {
                   className="mt-0.5"
                 />
                 <span>
-                  <strong className="text-foreground">Merge &amp; Update Duplicates:</strong>{' '}
-                  Adds new records and replaces matching trade IDs, matching journal dates, and saved settings from the backup. Unrelated existing records are still preserved.
+                  <strong className="text-loss">Merge &amp; Overwrite Duplicates (Destructive on matching IDs):</strong>{' '}
+                  Adds new records and replaces matching trade IDs, matching journal dates, and saved settings from the backup.
                 </span>
               </label>
             </div>
@@ -643,14 +676,19 @@ export function Settings() {
                   setBackupData(null);
                   setBackupFileName(null);
                 }}
-                className="min-h-[38px] px-3.5 py-1.5 rounded-sm border border-border text-xs font-semibold hover:bg-muted cursor-pointer"
+                className="min-h-[38px] px-3.5 py-1.5 rounded-md border border-border text-xs font-semibold hover:bg-muted cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={() => setConfirmRestoreOpen(true)}
-                className="min-h-[38px] px-4 py-1.5 rounded-sm bg-accent hover:bg-accent-hover text-white text-xs font-semibold cursor-pointer"
+                className={cn(
+                  'min-h-[38px] px-4 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-colors',
+                  importMode === 'merge_overwrite'
+                    ? 'bg-destructive text-white hover:opacity-90'
+                    : 'bg-accent hover:bg-accent-hover text-on-accent',
+                )}
               >
                 Apply Restore
               </button>

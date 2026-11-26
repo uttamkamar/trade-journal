@@ -4,6 +4,7 @@ import {
   ArrowDown,
   ArrowUp,
   CalendarBlank,
+  CaretDown,
   CaretLeft,
   CaretRight,
   CheckCircle,
@@ -130,6 +131,7 @@ export function Journal() {
     paramDate && DATE_RE.test(paramDate) ? paramDate : today;
 
   const [calendarMonth, setCalendarMonth] = useState(selectedDate.slice(0, 7));
+  const [mobileBrowserOpen, setMobileBrowserOpen] = useState(false);
   const [form, setForm] = useState<JournalInput>({ ...EMPTY_FORM });
   const [draftRestored, setDraftRestored] = useState(false);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
@@ -200,7 +202,6 @@ export function Journal() {
     const [y, m] = calendarMonth.split('-').map(Number);
     const firstDay = new Date(y, m - 1, 1);
     const daysInMonth = new Date(y, m, 0).getDate();
-    // Convert Sunday=0..Saturday=6 to Monday=0..Sunday=6
     const leadingBlanks = (firstDay.getDay() + 6) % 7;
 
     const cells: Array<{ date: string | null; dayNum?: number }> = [];
@@ -224,6 +225,7 @@ export function Journal() {
 
   const goToDate = (date: string) => {
     if (!DATE_RE.test(date)) return;
+    setMobileBrowserOpen(false);
     navigate(date === today ? '/journal' : `/journal/${date}`);
   };
 
@@ -294,23 +296,23 @@ export function Journal() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header + Date Controls */}
+    <div className="space-y-5">
+      {/* Header + Compact Date Controls */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Daily Journal</h1>
           <p className="text-sm text-muted-fg mt-0.5">
-            One reflection entry per date. Save drafts anytime; no field is mandatory.
+            One calm space per session. Drafts auto-save locally until committed.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           <button
             type="button"
             onClick={() => goToDate(shiftDate(selectedDate, -1))}
             aria-label="Previous day"
             title="Previous day"
-            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-sm border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
+            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-md border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
           >
             <CaretLeft size={16} weight="bold" aria-hidden="true" />
           </button>
@@ -325,7 +327,7 @@ export function Journal() {
             onChange={(e) => {
               if (e.target.value) goToDate(e.target.value);
             }}
-            className="min-h-[40px] px-3 py-1.5 rounded-sm border border-border bg-card text-sm font-semibold"
+            className="min-h-[40px] px-3 py-1.5 rounded-md border border-border bg-card text-sm font-num font-medium"
           />
 
           <button
@@ -333,7 +335,7 @@ export function Journal() {
             onClick={() => goToDate(shiftDate(selectedDate, 1))}
             aria-label="Next day"
             title="Next day"
-            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-sm border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
+            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-md border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
           >
             <CaretRight size={16} weight="bold" aria-hidden="true" />
           </button>
@@ -342,7 +344,7 @@ export function Journal() {
             <button
               type="button"
               onClick={() => goToDate(today)}
-              className="min-h-[40px] px-3 py-1.5 rounded-sm border border-primary text-primary text-xs font-semibold hover:bg-muted transition-colors cursor-pointer"
+              className="min-h-[40px] px-3 py-1.5 rounded-md border border-primary/40 text-primary text-xs font-semibold hover:bg-nav-active-bg transition-colors cursor-pointer"
             >
               Today
             </button>
@@ -350,21 +352,21 @@ export function Journal() {
         </div>
       </div>
 
-      {/* Automatic Day P/L & Trade Count Summary Banner */}
+      {/* Automatic Day P/L & Trade Count Summary Strip */}
       <section
         aria-label="Selected day trading summary"
-        className="bg-card border border-border rounded-md p-4 md:p-5 shadow-card flex flex-wrap items-center justify-between gap-4"
+        className="bg-card border border-border rounded-lg p-4 md:px-5 shadow-card flex flex-wrap items-center justify-between gap-4"
       >
-        <div className="flex flex-wrap items-center gap-6">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
-              Date
+              Session Date
             </div>
-            <div className="text-base font-bold mt-0.5 flex items-center gap-1.5">
+            <div className="text-sm sm:text-base font-semibold font-num mt-0.5 flex items-center gap-2">
               <CalendarBlank size={16} className="text-primary" aria-hidden="true" />
               <span>{formatDate(selectedDate)}</span>
               {selectedDate === today && (
-                <span className="px-2 py-0.5 rounded-full bg-nav-active-bg text-primary text-[11px] font-semibold">
+                <span className="px-2 py-0.5 rounded-full nav-active-bg text-primary font-sans text-[11px] font-semibold">
                   Today
                 </span>
               )}
@@ -373,11 +375,11 @@ export function Journal() {
 
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
-              Day&apos;s Realized P/L ({currency})
+              Realized P/L ({currency})
             </div>
             <div
               className={cn(
-                'text-lg font-bold mt-0.5 flex items-center gap-1',
+                'text-base sm:text-lg font-bold font-num mt-0.5 flex items-center gap-1',
                 daySummary.netPnl > 0
                   ? 'text-profit'
                   : daySummary.netPnl < 0
@@ -385,8 +387,8 @@ export function Journal() {
                   : 'text-foreground',
               )}
             >
-              {daySummary.netPnl > 0 && <ArrowUp size={16} weight="bold" aria-hidden="true" />}
-              {daySummary.netPnl < 0 && <ArrowDown size={16} weight="bold" aria-hidden="true" />}
+              {daySummary.netPnl > 0 && <ArrowUp size={15} weight="bold" aria-hidden="true" />}
+              {daySummary.netPnl < 0 && <ArrowDown size={15} weight="bold" aria-hidden="true" />}
               {daySummary.netPnl === 0 && <Minus size={14} weight="bold" aria-hidden="true" />}
               <span>{formatSignedCurrency(daySummary.netPnl, currency)}</span>
             </div>
@@ -396,13 +398,13 @@ export function Journal() {
             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
               Trades Taken
             </div>
-            <div className="text-base font-bold mt-0.5">
+            <div className="text-sm sm:text-base font-bold font-num mt-0.5">
               {daySummary.totalTrades}
-              <span className="text-xs font-normal text-muted-fg ml-2">
+              <span className="text-xs font-sans font-normal text-muted-fg ml-2">
                 {daySummary.totalTrades === 0
                   ? 'No trades recorded'
                   : daySummary.openTrades > 0
-                  ? `(${daySummary.wins}W / ${daySummary.losses}L · ${daySummary.openTrades} open excluded)`
+                  ? `(${daySummary.wins}W / ${daySummary.losses}L · ${daySummary.openTrades} open)`
                   : `(${daySummary.wins}W / ${daySummary.losses}L)`}
               </span>
             </div>
@@ -418,210 +420,234 @@ export function Journal() {
       </section>
 
       {entriesError && (
-        <div role="alert" className="bg-loss-bg border border-loss/30 rounded-md p-4 flex items-center justify-between gap-3">
+        <div role="alert" className="bg-loss-bg border border-loss/30 rounded-lg p-4 flex items-center justify-between gap-3">
           <span className="text-sm text-loss font-medium">Could not load journal entries.</span>
           <button
             type="button"
             onClick={() => refetchEntries()}
-            className="px-3 py-1.5 rounded-sm border border-border bg-card text-xs font-semibold cursor-pointer"
+            className="px-3 py-1.5 rounded-md border border-border bg-card text-xs font-semibold cursor-pointer"
           >
             Retry
           </button>
         </div>
       )}
 
-      {/* Main Two-Column Layout: Browser (left) + Reflection Form (right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-[310px_1fr] gap-6 items-start">
-        {/* Left: Calendar + Past Entries List */}
-        <aside className="space-y-4">
-          {/* Month Calendar */}
-          <section className="bg-card border border-border rounded-md p-4 shadow-card space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold">{calendarMonthLabel}</h2>
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => setCalendarMonth((m) => shiftMonth(m, -1))}
-                  aria-label="Previous month"
-                  className="w-8 h-8 inline-flex items-center justify-center rounded-sm hover:bg-muted text-muted-fg hover:text-foreground cursor-pointer"
-                >
-                  <CaretLeft size={15} weight="bold" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCalendarMonth((m) => shiftMonth(m, 1))}
-                  aria-label="Next month"
-                  className="w-8 h-8 inline-flex items-center justify-center rounded-sm hover:bg-muted text-muted-fg hover:text-foreground cursor-pointer"
-                >
-                  <CaretRight size={15} weight="bold" aria-hidden="true" />
-                </button>
-              </div>
-            </div>
+      {/* Main Two-Column Layout: Collapsible Browser on <lg + Writing Sheet */}
+      <div className="grid grid-cols-1 lg:grid-cols-[310px_1fr] gap-5 items-start">
+        <div className="space-y-3">
+          {/* Compact mobile/tablet toggle to preserve writing space */}
+          <button
+            type="button"
+            aria-expanded={mobileBrowserOpen}
+            onClick={() => setMobileBrowserOpen((o) => !o)}
+            className="lg:hidden w-full min-h-[42px] px-4 py-2.5 rounded-lg border border-border bg-card shadow-card flex items-center justify-between gap-2 text-sm font-semibold cursor-pointer hover:bg-muted/40 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <CalendarBlank size={17} className="text-primary" aria-hidden="true" />
+              <span>Calendar &amp; Saved Entries ({entries.length})</span>
+            </span>
+            <CaretDown
+              size={16}
+              weight="bold"
+              aria-hidden="true"
+              className={cn(
+                'text-muted-fg transition-transform',
+                mobileBrowserOpen && 'rotate-180',
+              )}
+            />
+          </button>
 
-            <div className="grid grid-cols-7 gap-1 text-center">
-              {WEEKDAYS.map((w) => (
-                <div key={w} className="text-[10px] font-semibold uppercase text-muted-fg py-1">
-                  {w}
-                </div>
-              ))}
-
-              {calendarCells.map((cell, i) => {
-                if (!cell.date) {
-                  return <div key={`blank-${i}`} aria-hidden="true" />;
-                }
-                const date = cell.date;
-                const isSelected = date === selectedDate;
-                const isToday = date === today;
-                const hasJournal = entryDateSet.has(date);
-                const dayPnl = dayPnlByDate.get(date);
-
-                return (
+          {/* Left: Calendar + Past Entries List (always shown on lg+, collapsible on <lg) */}
+          <aside className={cn('space-y-4', mobileBrowserOpen ? 'block' : 'hidden lg:block')}>
+            {/* Month Calendar */}
+            <section className="bg-card border border-border rounded-lg p-4 shadow-card space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold">{calendarMonthLabel}</h2>
+                <div className="flex items-center gap-1">
                   <button
-                    key={date}
                     type="button"
-                    onClick={() => goToDate(date)}
-                    aria-label={`${formatDate(date)}${hasJournal ? ' (journal saved)' : ''}`}
-                    aria-current={isSelected ? 'date' : undefined}
-                    className={cn(
-                      'relative h-9 rounded-sm text-xs font-medium flex flex-col items-center justify-center transition-colors cursor-pointer',
-                      isSelected
-                        ? 'bg-primary text-on-primary font-bold'
-                        : isToday
-                        ? 'border border-primary text-primary font-bold hover:bg-muted'
-                        : 'text-foreground hover:bg-muted',
-                    )}
+                    onClick={() => setCalendarMonth((m) => shiftMonth(m, -1))}
+                    aria-label="Previous month"
+                    className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-muted text-muted-fg hover:text-foreground cursor-pointer"
                   >
-                    <span>{cell.dayNum}</span>
-                    {(hasJournal || dayPnl !== undefined) && (
-                      <span className="flex items-center gap-0.5 mt-0.5" aria-hidden="true">
-                        {hasJournal && (
-                          <span
-                            className={cn(
-                              'w-1.5 h-1.5 rounded-full',
-                              isSelected ? 'bg-on-primary' : 'bg-accent',
-                            )}
-                          />
-                        )}
-                        {dayPnl !== undefined && (
-                          <span
-                            className={cn(
-                              'w-1.5 h-1.5 rounded-full',
-                              isSelected
-                                ? 'bg-white/80'
-                                : dayPnl >= 0
-                                ? 'bg-profit'
-                                : 'bg-loss',
-                            )}
-                          />
-                        )}
-                      </span>
-                    )}
+                    <CaretLeft size={15} weight="bold" aria-hidden="true" />
                   </button>
-                );
-              })}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border text-[11px] text-muted-fg">
-              <span className="inline-flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-accent inline-block" aria-hidden="true" />
-                Journal
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-profit inline-block" aria-hidden="true" />
-                Profit day
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-loss inline-block" aria-hidden="true" />
-                Loss day
-              </span>
-            </div>
-          </section>
-
-          {/* Saved Entries Date List */}
-          <section className="bg-card border border-border rounded-md shadow-card overflow-hidden">
-            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-              <h2 className="text-sm font-bold">Saved Entries</h2>
-              <span className="text-xs text-muted-fg">{entries.length}</span>
-            </div>
-
-            {entriesLoading ? (
-              <div className="p-4 text-xs text-muted-fg">Loading entries…</div>
-            ) : entries.length === 0 ? (
-              <div className="p-5 text-center space-y-1.5">
-                <Notebook size={24} className="mx-auto text-primary/70" aria-hidden="true" />
-                <p className="text-xs font-medium">No journal entries yet</p>
-                <p className="text-[11px] text-muted-fg">
-                  Write your first reflection on the right and save it.
-                </p>
+                  <button
+                    type="button"
+                    onClick={() => setCalendarMonth((m) => shiftMonth(m, 1))}
+                    aria-label="Next month"
+                    className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-muted text-muted-fg hover:text-foreground cursor-pointer"
+                  >
+                    <CaretRight size={15} weight="bold" aria-hidden="true" />
+                  </button>
+                </div>
               </div>
-            ) : (
-              <div className="divide-y divide-border max-h-80 overflow-y-auto">
-                {entries.map((entry) => {
-                  const summary = computeDayTradeSummary(trades, entry.journal_date);
-                  const active = entry.journal_date === selectedDate;
-                  const snippet =
-                    entry.trading_summary ||
-                    entry.lessons_learned ||
-                    entry.what_went_well ||
-                    entry.general_notes ||
-                    'Draft saved';
+
+              <div className="grid grid-cols-7 gap-1 text-center">
+                {WEEKDAYS.map((w) => (
+                  <div key={w} className="text-[10px] font-semibold uppercase text-muted-fg py-1">
+                    {w}
+                  </div>
+                ))}
+
+                {calendarCells.map((cell, i) => {
+                  if (!cell.date) {
+                    return <div key={`blank-${i}`} aria-hidden="true" />;
+                  }
+                  const date = cell.date;
+                  const isSelected = date === selectedDate;
+                  const isToday = date === today;
+                  const hasJournal = entryDateSet.has(date);
+                  const dayPnl = dayPnlByDate.get(date);
 
                   return (
                     <button
-                      key={entry.id}
+                      key={date}
                       type="button"
-                      onClick={() => goToDate(entry.journal_date)}
+                      onClick={() => goToDate(date)}
+                      aria-label={`${formatDate(date)}${hasJournal ? ' (journal saved)' : ''}`}
+                      aria-current={isSelected ? 'date' : undefined}
                       className={cn(
-                        'w-full text-left px-4 py-3 transition-colors cursor-pointer space-y-1',
-                        active ? 'nav-active-bg' : 'hover:bg-background/80',
+                        'relative h-9 rounded-md text-xs font-num font-medium flex flex-col items-center justify-center transition-colors cursor-pointer',
+                        isSelected
+                          ? 'bg-primary text-on-primary font-semibold'
+                          : isToday
+                          ? 'border border-primary/60 text-primary font-semibold hover:bg-muted'
+                          : 'text-foreground hover:bg-muted',
                       )}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-bold text-foreground">
-                          {formatDate(entry.journal_date)}
-                        </span>
-                        <span
-                          className={cn(
-                            'text-[11px] font-semibold',
-                            summary.netPnl > 0
-                              ? 'text-profit'
-                              : summary.netPnl < 0
-                              ? 'text-loss'
-                              : 'text-muted-fg',
+                      <span>{cell.dayNum}</span>
+                      {(hasJournal || dayPnl !== undefined) && (
+                        <span className="flex items-center gap-0.5 mt-0.5" aria-hidden="true">
+                          {hasJournal && (
+                            <span
+                              className={cn(
+                                'w-1.5 h-1.5 rounded-full',
+                                isSelected ? 'bg-on-primary' : 'bg-amber-500',
+                              )}
+                            />
                           )}
-                        >
-                          {summary.closedTrades > 0
-                            ? formatSignedCurrency(summary.netPnl, currency)
-                            : `${summary.totalTrades} trade${summary.totalTrades === 1 ? '' : 's'}`}
+                          {dayPnl !== undefined && (
+                            <span
+                              className={cn(
+                                'w-1.5 h-1.5 rounded-full',
+                                isSelected
+                                  ? 'bg-on-primary/80'
+                                  : dayPnl >= 0
+                                  ? 'bg-profit'
+                                  : 'bg-loss',
+                              )}
+                            />
+                          )}
                         </span>
-                      </div>
-                      <p className="text-xs text-muted-fg truncate">{snippet}</p>
+                      )}
                     </button>
                   );
                 })}
               </div>
-            )}
-          </section>
-        </aside>
 
-        {/* Right: Reflection Editor */}
+              <div className="flex flex-wrap items-center gap-3 pt-2.5 border-t border-border text-[11px] text-muted-fg">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" aria-hidden="true" />
+                  Journal
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-profit inline-block" aria-hidden="true" />
+                  Profit day
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-loss inline-block" aria-hidden="true" />
+                  Loss day
+                </span>
+              </div>
+            </section>
+
+            {/* Saved Entries Date List */}
+            <section className="bg-card border border-border rounded-lg shadow-card overflow-hidden">
+              <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+                <h2 className="text-sm font-semibold">Saved Entries</h2>
+                <span className="text-xs font-num text-muted-fg">{entries.length}</span>
+              </div>
+
+              {entriesLoading ? (
+                <div className="p-4 text-xs text-muted-fg">Loading entries…</div>
+              ) : entries.length === 0 ? (
+                <div className="p-5 text-center space-y-1.5">
+                  <Notebook size={24} className="mx-auto text-muted-fg" aria-hidden="true" />
+                  <p className="text-xs font-medium">No journal entries yet</p>
+                  <p className="text-[11px] text-muted-fg">
+                    Write your first reflection and save it.
+                  </p>
+                </div>
+              ) : (
+                <div className="divide-y divide-border max-h-80 overflow-y-auto">
+                  {entries.map((entry) => {
+                    const summary = computeDayTradeSummary(trades, entry.journal_date);
+                    const active = entry.journal_date === selectedDate;
+                    const snippet =
+                      entry.trading_summary ||
+                      entry.lessons_learned ||
+                      entry.what_went_well ||
+                      entry.general_notes ||
+                      'Draft saved';
+
+                    return (
+                      <button
+                        key={entry.id}
+                        type="button"
+                        onClick={() => goToDate(entry.journal_date)}
+                        className={cn(
+                          'w-full text-left px-4 py-3 transition-colors cursor-pointer space-y-1',
+                          active ? 'nav-active-bg' : 'hover:bg-muted/35',
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-num font-semibold text-foreground">
+                            {formatDate(entry.journal_date)}
+                          </span>
+                          <span
+                            className={cn(
+                              'text-[11px] font-num font-semibold',
+                              summary.netPnl > 0
+                                ? 'text-profit'
+                                : summary.netPnl < 0
+                                ? 'text-loss'
+                                : 'text-muted-fg',
+                            )}
+                          >
+                            {summary.closedTrades > 0
+                              ? formatSignedCurrency(summary.netPnl, currency)
+                              : `${summary.totalTrades} trade${summary.totalTrades === 1 ? '' : 's'}`}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-fg truncate">{snippet}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          </aside>
+        </div>
+
+        {/* Right: Calm Editorial Reflection Sheet */}
         <form
           onSubmit={persistEntry}
-          className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-5"
+          className="bg-card border border-border rounded-lg p-5 sm:p-6 md:p-7 shadow-card space-y-6"
         >
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-4">
             <div>
-              <h2 className="text-base font-bold">
-                Reflection for {formatDate(selectedDate)}
+              <h2 className="text-base sm:text-lg font-semibold">
+                Reflection for <span className="font-num">{formatDate(selectedDate)}</span>
               </h2>
               <p className="text-xs text-muted-fg mt-0.5">
                 {isDirty
                   ? draftRestored
-                    ? 'Local unsaved draft restored — click Save Entry to persist to database.'
+                    ? 'Local unsaved draft restored — click Save Entry to persist.'
                     : 'Unsaved changes (backed up as local draft).'
                   : savedEntry
                   ? 'Saved in your journal.'
-                  : 'New entry — fill what helps you today.'}
+                  : 'Blank page — capture whatever stands out from today.'}
               </p>
             </div>
 
@@ -629,7 +655,7 @@ export function Journal() {
               className={cn(
                 'px-2.5 py-1 rounded-full text-xs font-semibold',
                 isDirty
-                  ? 'bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
+                  ? 'bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
                   : savedEntry
                   ? 'bg-profit-bg text-profit'
                   : 'bg-muted text-muted-fg',
@@ -642,7 +668,7 @@ export function Journal() {
           {statusMsg && (
             <div
               role="status"
-              className="flex items-center gap-2 rounded-md border border-profit/30 bg-profit-bg px-4 py-2.5 text-sm font-medium text-profit"
+              className="flex items-center gap-2 rounded-lg border border-profit/30 bg-profit-bg px-4 py-2.5 text-sm font-medium text-profit"
             >
               <CheckCircle size={18} weight="bold" aria-hidden="true" />
               <span>{statusMsg}</span>
@@ -652,7 +678,7 @@ export function Journal() {
           {errorMsg && (
             <div
               role="alert"
-              className="flex items-center gap-2 rounded-md border border-loss/30 bg-loss-bg px-4 py-2.5 text-sm font-medium text-loss"
+              className="flex items-center gap-2 rounded-lg border border-loss/30 bg-loss-bg px-4 py-2.5 text-sm font-medium text-loss"
             >
               <WarningCircle size={18} weight="bold" aria-hidden="true" />
               <span>{errorMsg}</span>
@@ -660,7 +686,7 @@ export function Journal() {
           )}
 
           <div>
-            <label htmlFor="journal-summary" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="journal-summary" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               How was my trading today?
             </label>
             <textarea
@@ -669,13 +695,13 @@ export function Journal() {
               value={form.trading_summary ?? ''}
               onChange={(e) => updateField('trading_summary', e.target.value)}
               placeholder="Overall market conditions, execution quality, mindset..."
-              className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background/60 focus:bg-card text-foreground text-sm leading-relaxed transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="journal-well" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+              <label htmlFor="journal-well" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
                 What did I do well?
               </label>
               <textarea
@@ -684,12 +710,12 @@ export function Journal() {
                 value={form.what_went_well ?? ''}
                 onChange={(e) => updateField('what_went_well', e.target.value)}
                 placeholder="Patience, waiting for confirmation, respecting stop loss..."
-                className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+                className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background/60 focus:bg-card text-foreground text-sm leading-relaxed transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="journal-mistakes" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+              <label htmlFor="journal-mistakes" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
                 What mistakes did I make?
               </label>
               <textarea
@@ -698,14 +724,14 @@ export function Journal() {
                 value={form.mistakes_today ?? ''}
                 onChange={(e) => updateField('mistakes_today', e.target.value)}
                 placeholder="FOMO, overtrading, sizing up, breaking rules..."
-                className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+                className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background/60 focus:bg-card text-foreground text-sm leading-relaxed transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="journal-lessons" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+              <label htmlFor="journal-lessons" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
                 What did I learn today?
               </label>
               <textarea
@@ -714,12 +740,12 @@ export function Journal() {
                 value={form.lessons_learned ?? ''}
                 onChange={(e) => updateField('lessons_learned', e.target.value)}
                 placeholder="Key insight from today's session..."
-                className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+                className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background/60 focus:bg-card text-foreground text-sm leading-relaxed transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="journal-improve" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+              <label htmlFor="journal-improve" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
                 What will I improve tomorrow?
               </label>
               <textarea
@@ -728,13 +754,13 @@ export function Journal() {
                 value={form.improvement_for_tomorrow ?? ''}
                 onChange={(e) => updateField('improvement_for_tomorrow', e.target.value)}
                 placeholder="One concrete focus for the next session..."
-                className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+                className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background/60 focus:bg-card text-foreground text-sm leading-relaxed transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Did I follow my trading plan?
             </span>
             <div className="grid grid-cols-3 gap-2 max-w-md">
@@ -750,7 +776,7 @@ export function Journal() {
                     )
                   }
                   className={cn(
-                    'min-h-[42px] rounded-sm border text-sm font-semibold transition-colors cursor-pointer',
+                    'min-h-[40px] rounded-md border text-sm font-semibold transition-colors cursor-pointer',
                     form.plan_followed === opt
                       ? 'bg-primary text-on-primary border-primary'
                       : 'bg-background border-border text-muted-fg hover:text-foreground',
@@ -763,7 +789,7 @@ export function Journal() {
           </div>
 
           <div>
-            <label htmlFor="journal-notes" className="block text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+            <label htmlFor="journal-notes" className="block text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               General notes
             </label>
             <textarea
@@ -772,17 +798,17 @@ export function Journal() {
               value={form.general_notes ?? ''}
               onChange={(e) => updateField('general_notes', e.target.value)}
               placeholder="Sleep, energy, news events, or anything else worth noting..."
-              className="w-full px-3 py-2 rounded-sm border border-border bg-background text-foreground text-sm"
+              className="w-full px-3.5 py-2.5 rounded-md border border-border bg-background/60 focus:bg-card text-foreground text-sm leading-relaxed transition-colors"
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-border">
             <div className="flex items-center gap-2">
               {savedEntry && (
                 <button
                   type="button"
                   onClick={() => setConfirmDeleteOpen(true)}
-                  className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm border border-loss/30 bg-loss-bg text-loss text-xs font-semibold hover:opacity-90 cursor-pointer"
+                  className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md border border-loss/30 bg-loss-bg text-loss text-xs font-semibold hover:opacity-90 cursor-pointer"
                 >
                   <Trash size={15} aria-hidden="true" />
                   <span>Delete Entry</span>
@@ -792,7 +818,7 @@ export function Journal() {
                 <button
                   type="button"
                   onClick={handleDiscardDraft}
-                  className="min-h-[40px] px-3 py-2 rounded-sm border border-border text-xs font-semibold text-muted-fg hover:text-foreground hover:bg-muted cursor-pointer"
+                  className="min-h-[40px] px-3 py-2 rounded-md border border-border text-xs font-semibold text-muted-fg hover:text-foreground hover:bg-muted cursor-pointer"
                 >
                   Discard Draft
                 </button>
@@ -802,7 +828,7 @@ export function Journal() {
             <button
               type="submit"
               disabled={saveEntry.isPending}
-              className="min-h-[42px] inline-flex items-center gap-1.5 px-5 py-2 rounded-sm bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors cursor-pointer disabled:opacity-60"
+              className="min-h-[42px] inline-flex items-center gap-1.5 px-5 py-2 rounded-md bg-accent hover:bg-accent-hover text-on-accent text-sm font-semibold transition-colors cursor-pointer disabled:opacity-60"
             >
               <FloppyDisk size={16} weight="bold" aria-hidden="true" />
               <span>{saveEntry.isPending ? 'Saving…' : 'Save Entry'}</span>

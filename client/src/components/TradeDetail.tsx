@@ -70,16 +70,16 @@ export function TradeDetail({ trade }: TradeDetailProps) {
           <button
             type="button"
             onClick={() => navigate('/trades')}
-            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-sm border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
+            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-md border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
             aria-label="Back to trade history"
           >
             <ArrowLeft size={18} aria-hidden="true" />
           </button>
           <div>
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-2xl font-bold tracking-tight">{trade.symbol}</h1>
+              <h1 className="text-2xl font-bold tracking-tight font-num">{trade.symbol}</h1>
               <span
-                className={`px-2.5 py-0.5 rounded-sm text-xs font-semibold ${
+                className={`px-2.5 py-0.5 rounded-md text-xs font-semibold ${
                   trade.direction === 'Buy'
                     ? 'bg-profit-bg text-profit'
                     : 'bg-loss-bg text-loss'
@@ -93,9 +93,9 @@ export function TradeDetail({ trade }: TradeDetailProps) {
                 status={trade.status}
               />
             </div>
-            <p className="text-sm text-muted-fg mt-0.5">
-              {formatDate(trade.trade_date)}
-              {trade.setup ? ` · ${trade.setup}` : ''}
+            <p className="text-sm text-muted-fg mt-0.5 flex flex-wrap items-center gap-1.5">
+              <span className="font-num text-xs">{formatDate(trade.trade_date)}</span>
+              {trade.setup ? <span>· {trade.setup}</span> : null}
             </p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
           <button
             type="button"
             onClick={() => navigate(`/trades/${trade.id}/edit`)}
-            className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm border border-border bg-card text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
+            className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md border border-border bg-card text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
           >
             <PencilSimple size={16} aria-hidden="true" />
             <span>Edit</span>
@@ -112,7 +112,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
           <button
             type="button"
             onClick={() => setConfirmOpen(true)}
-            className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm border border-loss/30 bg-loss-bg text-loss text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+            className="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md border border-loss/30 bg-loss-bg text-loss text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer"
           >
             <Trash size={16} aria-hidden="true" />
             <span>Delete</span>
@@ -123,7 +123,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
       {successMessage && (
         <div
           role="status"
-          className="flex items-center gap-2 bg-profit-bg border border-profit/30 text-profit rounded-md px-4 py-3 text-sm font-medium"
+          className="flex items-center gap-2 bg-profit-bg border border-profit/30 text-profit rounded-lg px-4 py-3 text-sm font-medium"
         >
           <CheckCircle size={18} weight="bold" aria-hidden="true" />
           <span>{successMessage}</span>
@@ -131,28 +131,28 @@ export function TradeDetail({ trade }: TradeDetailProps) {
       )}
 
       {deleteError && (
-        <div role="alert" className="bg-loss-bg border border-loss/30 text-loss rounded-md px-4 py-3 text-sm">
+        <div role="alert" className="bg-loss-bg border border-loss/30 text-loss rounded-lg px-4 py-3 text-sm">
           {deleteError}
         </div>
       )}
 
       {/* Primary Execution Summary */}
-      <section className="bg-card border border-border rounded-md p-5 shadow-card grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Entry Price</div>
-          <div className="text-base font-bold mt-1">{trade.entry_price ?? '—'}</div>
+      <section className="bg-card border border-border rounded-lg shadow-card grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border overflow-hidden">
+        <div className="p-4 sm:p-5">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Entry Price</div>
+          <div className="text-base font-semibold font-num mt-1">{trade.entry_price ?? '—'}</div>
         </div>
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Exit Price</div>
-          <div className="text-base font-bold mt-1">{trade.exit_price ?? '—'}</div>
+        <div className="p-4 sm:p-5">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Exit Price</div>
+          <div className="text-base font-semibold font-num mt-1">{trade.exit_price ?? '—'}</div>
         </div>
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Lot / Quantity</div>
-          <div className="text-base font-bold mt-1">{trade.quantity_or_lot_size ?? '—'}</div>
+        <div className="p-4 sm:p-5">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Lot / Quantity</div>
+          <div className="text-base font-semibold font-num mt-1">{trade.quantity_or_lot_size ?? '—'}</div>
         </div>
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Net P/L</div>
-          <div className="text-base font-bold mt-1">
+        <div className="p-4 sm:p-5">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Net P/L</div>
+          <div className="text-base font-semibold font-num mt-1">
             {trade.status === 'Open'
               ? 'Open (excluded)'
               : formatCurrency(trade.realized_pnl, trade.currency)}
@@ -161,43 +161,43 @@ export function TradeDetail({ trade }: TradeDetailProps) {
       </section>
 
       {/* Journaling Notes */}
-      <section className="bg-card border border-border rounded-md p-5 md:p-6 shadow-card space-y-5">
+      <section className="bg-card border border-border rounded-lg p-5 md:p-6 shadow-card space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-4 border-b border-border">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Emotion</div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Emotion</div>
             <div className="text-sm font-medium mt-1">{trade.emotion || '—'}</div>
           </div>
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Followed Plan?</div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Followed Plan?</div>
             <div className="text-sm font-medium mt-1">{trade.plan_followed || '—'}</div>
           </div>
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-fg">Status</div>
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">Status</div>
             <div className="text-sm font-medium mt-1">{trade.status}</div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+          <div className="rounded-md bg-background/70 border border-border/70 p-4">
+            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Why did I enter?
             </h2>
-            <p className="text-sm whitespace-pre-wrap text-foreground">
+            <p className="text-sm whitespace-pre-wrap text-foreground leading-relaxed">
               {trade.entry_reason || 'No entry note recorded.'}
             </p>
           </div>
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+          <div className="rounded-md bg-background/70 border border-border/70 p-4">
+            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
               Why did I exit?
             </h2>
-            <p className="text-sm whitespace-pre-wrap text-foreground">
+            <p className="text-sm whitespace-pre-wrap text-foreground leading-relaxed">
               {trade.exit_reason || 'No exit note recorded.'}
             </p>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-fg mb-2">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-2">
             Mistakes Tagged
           </h2>
           {allMistakes.length > 0 ? (
@@ -205,7 +205,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
               {allMistakes.map((m) => (
                 <span
                   key={m}
-                  className="px-2.5 py-1 rounded-sm bg-loss-bg text-loss text-xs font-semibold"
+                  className="px-2.5 py-1 rounded-md bg-loss-bg text-loss text-xs font-medium"
                 >
                   {m}
                 </span>
@@ -217,17 +217,17 @@ export function TradeDetail({ trade }: TradeDetailProps) {
         </div>
 
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg mb-1.5">
             Lesson Learned
           </h2>
-          <p className="text-sm whitespace-pre-wrap text-foreground">
+          <p className="text-sm whitespace-pre-wrap text-foreground leading-relaxed">
             {trade.lesson || 'No lesson recorded.'}
           </p>
         </div>
 
         {trade.screenshot_references.length > 0 && (
-          <div className="space-y-2 pt-2 border-t border-border">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-fg">
+          <div className="space-y-2.5 pt-3 border-t border-border">
+            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
               Screenshots ({trade.screenshot_references.length})
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -236,7 +236,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
                   key={src}
                   type="button"
                   onClick={() => setLightboxUrl(src)}
-                  className="rounded-sm border border-border overflow-hidden bg-background hover:border-primary transition-colors cursor-pointer"
+                  className="rounded-md border border-border overflow-hidden bg-background hover:border-primary transition-colors cursor-pointer"
                 >
                   <img
                     src={src}
@@ -257,14 +257,14 @@ export function TradeDetail({ trade }: TradeDetailProps) {
           aria-modal="true"
           aria-label="Screenshot preview"
           onClick={() => setLightboxUrl(null)}
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
         >
           <button
             ref={closeLightboxRef}
             type="button"
             aria-label="Close preview"
             onClick={() => setLightboxUrl(null)}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-card text-foreground flex items-center justify-center cursor-pointer"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-card border border-border text-foreground flex items-center justify-center cursor-pointer hover:bg-muted"
           >
             <X size={20} aria-hidden="true" />
           </button>
@@ -272,7 +272,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
             src={lightboxUrl}
             alt="Full size trade screenshot"
             onClick={(e) => e.stopPropagation()}
-            className="max-w-full max-h-[88vh] rounded-md object-contain"
+            className="max-w-full max-h-[88vh] rounded-lg object-contain shadow-card-hover"
           />
         </div>
       )}

@@ -58,21 +58,21 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col overflow-x-clip">
       {/* Top Bar */}
-      <header className="sticky top-0 z-30 h-14 bg-card border-b border-border px-3 sm:px-6 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5">
+      <header className="sticky top-0 z-30 h-14 bg-card/95 backdrop-blur-sm border-b border-border px-3 sm:px-6 flex items-center justify-between gap-2">
+        <NavLink to="/" className="flex items-center gap-2.5 rounded-md focus-visible:outline-none">
           <div
-            className="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center font-extrabold text-sm tracking-tight shrink-0"
+            className="w-8 h-8 rounded-md bg-accent text-on-accent flex items-center justify-center font-bold text-xs tracking-tight shrink-0"
             aria-hidden="true"
           >
             TL
           </div>
-          <span className="font-bold text-[17px] tracking-tight text-primary">
+          <span className="font-semibold text-[16px] tracking-tight text-foreground">
             TradeLog
           </span>
-        </div>
+        </NavLink>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="hidden sm:inline text-xs font-medium text-muted-fg">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-md bg-muted/70 text-xs font-num text-muted-fg">
             {todayLabel}
           </span>
 
@@ -81,12 +81,12 @@ export function Layout() {
             onClick={handleToggleTheme}
             aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
             title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
-            className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-sm border border-border bg-background text-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="min-h-[38px] min-w-[38px] inline-flex items-center justify-center rounded-md border border-border bg-card text-muted-fg hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
           >
             {theme === 'light' ? (
-              <Moon size={18} weight="regular" aria-hidden="true" />
+              <Moon size={17} weight="regular" aria-hidden="true" />
             ) : (
-              <Sun size={18} weight="regular" aria-hidden="true" />
+              <Sun size={17} weight="regular" aria-hidden="true" />
             )}
           </button>
 
@@ -95,22 +95,22 @@ export function Layout() {
             aria-label="Settings"
             className={({ isActive }) =>
               cn(
-                'md:hidden min-h-[40px] min-w-[40px] inline-flex items-center justify-center rounded-sm border border-border transition-colors',
+                'md:hidden min-h-[38px] min-w-[38px] inline-flex items-center justify-center rounded-md border transition-colors',
                 isActive
                   ? 'nav-active-bg text-primary border-primary/30'
-                  : 'bg-background text-muted-fg hover:bg-muted hover:text-foreground',
+                  : 'bg-card border-border text-muted-fg hover:bg-muted hover:text-foreground',
               )
             }
           >
-            <Gear size={18} weight="regular" aria-hidden="true" />
+            <Gear size={17} weight="regular" aria-hidden="true" />
           </NavLink>
 
           <button
             type="button"
             onClick={() => navigate('/trades/new')}
-            className="min-h-[40px] inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-sm bg-accent hover:bg-accent-hover text-white text-xs sm:text-sm font-semibold transition-colors cursor-pointer whitespace-nowrap"
+            className="min-h-[38px] inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-md bg-accent hover:bg-accent-hover text-on-accent text-xs sm:text-sm font-semibold transition-colors cursor-pointer whitespace-nowrap"
           >
-            <Plus size={16} weight="bold" aria-hidden="true" />
+            <Plus size={15} weight="bold" aria-hidden="true" />
             <span>Add Trade</span>
           </button>
         </div>
@@ -120,10 +120,10 @@ export function Layout() {
         {/* Desktop Sidebar */}
         <aside
           aria-label="Main navigation"
-          className="hidden md:flex md:w-[224px] md:shrink-0 md:flex-col md:sticky md:top-14 md:h-[calc(100vh-3.5rem)] md:overflow-y-auto bg-card border-r border-border px-3 py-5"
+          className="hidden md:flex md:w-[228px] md:shrink-0 md:flex-col md:sticky md:top-14 md:h-[calc(100vh-3.5rem)] md:overflow-y-auto bg-card border-r border-border px-3 py-5"
         >
           <div className="px-2.5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-fg">
-            Journal
+            Workspace
           </div>
 
           <nav className="flex flex-col gap-1 flex-1">
@@ -134,23 +134,32 @@ export function Layout() {
                 end={end}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-sm font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors',
                     isActive
                       ? 'nav-active-bg text-primary font-semibold'
-                      : 'text-muted-fg hover:bg-muted hover:text-foreground',
+                      : 'text-muted-fg font-medium hover:bg-muted/70 hover:text-foreground',
                   )
                 }
               >
-                <Icon size={18} weight="regular" aria-hidden="true" className="shrink-0" />
-                <span>{label}</span>
-                {to === '/journal' && !todayJournalComplete && (
-                  <span
-                    title="Today's journal is not complete yet"
-                    aria-label="incomplete"
-                    className="ml-auto px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 text-[10px] font-bold"
-                  >
-                    !
-                  </span>
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      size={18}
+                      weight={isActive ? 'fill' : 'regular'}
+                      aria-hidden="true"
+                      className="shrink-0"
+                    />
+                    <span>{label}</span>
+                    {to === '/journal' && !todayJournalComplete && (
+                      <span
+                        title="Today's journal is not complete yet"
+                        aria-label="incomplete"
+                        className="ml-auto inline-flex items-center px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 text-[10px] font-semibold"
+                      >
+                        Due
+                      </span>
+                    )}
+                  </>
                 )}
               </NavLink>
             ))}
@@ -161,21 +170,30 @@ export function Layout() {
               to="/settings"
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-sm font-medium transition-colors',
+                  'flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors',
                   isActive
                     ? 'nav-active-bg text-primary font-semibold'
-                    : 'text-muted-fg hover:bg-muted hover:text-foreground',
+                    : 'text-muted-fg font-medium hover:bg-muted/70 hover:text-foreground',
                 )
               }
             >
-              <Gear size={18} weight="regular" aria-hidden="true" className="shrink-0" />
-              <span>Settings</span>
+              {({ isActive }) => (
+                <>
+                  <Gear
+                    size={18}
+                    weight={isActive ? 'fill' : 'regular'}
+                    aria-hidden="true"
+                    className="shrink-0"
+                  />
+                  <span>Settings</span>
+                </>
+              )}
             </NavLink>
           </div>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 px-4 py-5 pb-24 md:px-8 md:py-7 md:pb-8">
+        <main className="flex-1 min-w-0 px-4 py-5 pb-24 md:px-8 md:py-7 md:pb-10">
           <div className="max-w-6xl mx-auto">
             <Outlet />
           </div>
@@ -185,7 +203,7 @@ export function Layout() {
       {/* Mobile Bottom Tab Bar */}
       <nav
         aria-label="Mobile navigation"
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-card border-t border-border grid grid-cols-5 h-16"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-sm border-t border-border grid grid-cols-5 h-16"
       >
         {NAV_ITEMS.map(({ to, shortLabel, icon: Icon, end }) => (
           <NavLink
@@ -194,18 +212,26 @@ export function Layout() {
             end={end}
             className={({ isActive }) =>
               cn(
-                'relative flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors',
-                isActive ? 'text-primary font-semibold' : 'text-muted-fg',
+                'relative flex flex-col items-center justify-center gap-0.5 text-[11px] transition-colors',
+                isActive ? 'text-primary font-semibold' : 'text-muted-fg font-medium',
               )
             }
           >
-            <Icon size={20} weight="regular" aria-hidden="true" />
-            <span>{shortLabel}</span>
-            {to === '/journal' && !todayJournalComplete && (
-              <span
-                aria-hidden="true"
-                className="absolute top-2 right-4 w-2 h-2 rounded-full bg-accent"
-              />
+            {({ isActive }) => (
+              <>
+                <Icon
+                  size={20}
+                  weight={isActive ? 'fill' : 'regular'}
+                  aria-hidden="true"
+                />
+                <span>{shortLabel}</span>
+                {to === '/journal' && !todayJournalComplete && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-2 right-4 w-2 h-2 rounded-full bg-amber-500"
+                  />
+                )}
+              </>
             )}
           </NavLink>
         ))}

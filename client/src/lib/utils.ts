@@ -28,6 +28,29 @@ export function formatSignedCurrency(amount: number, currency = 'USD'): string {
   return formatCurrency(0, currency);
 }
 
+/** Format compact currency ticks for chart Y axes (handles small decimals cleanly). */
+export function formatAxisCurrency(value: number, currency = 'USD'): string {
+  const abs = Math.abs(value);
+  const symbol =
+    new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })
+      .formatToParts(0)
+      .find((p) => p.type === 'currency')?.value ?? '';
+  const formatted =
+    abs >= 1000
+      ? `${(abs / 1000).toFixed(abs % 1000 === 0 ? 0 : 1)}k`
+      : Number.isInteger(abs)
+      ? String(abs)
+      : abs.toFixed(2);
+  if (value > 0) return `+${symbol}${formatted}`;
+  if (value < 0) return `−${symbol}${formatted}`;
+  return `${symbol}0`;
+}
+
 /** Format a YYYY-MM-DD string using the system locale (defaulting to DD/MM/YYYY when Chrome uses en-US). */
 export function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return '—';
